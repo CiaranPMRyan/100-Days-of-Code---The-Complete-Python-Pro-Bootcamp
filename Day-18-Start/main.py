@@ -68,6 +68,7 @@ screen.colormode(255)
 
 p = 3
 
+# Spirograph
 spirograph(tim, 8, 100)
 tim.pensize(4)
 spirograph(tim, 15, 120)
@@ -85,10 +86,6 @@ spirograph(tim, 20, 180)
     #p += 1
     #tim.pensize(p)
     #random_walk(tim)
-
-# Spirograph
-
-
 
 # Click to close screen
 screen.exitonclick()
