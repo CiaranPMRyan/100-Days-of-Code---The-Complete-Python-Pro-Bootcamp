@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="11083a31-7bcb-48db-8618-a3c3063a9e23" name="Changes" comment="" />
+    <list default="true" id="11083a31-7bcb-48db-8618-a3c3063a9e23" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../Day 5/Password Generator Project/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../Day 5/Password Generator Project/task.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,14 +30,14 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/matti/PycharmProjects/100 Days of Code - The Complete Python Pro Bootcamp/Day 16-100/day-29-start",
+    "last_opened_file_path": "C:/Users/finan/100-Days-of-Code---The-Complete-Python-Pro-Bootcamp/100 Days of Code - The Complete Python Pro Bootcamp/Day 16-100/Day-26-Start",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
 }]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-4c141bd692a7-e2d783800521-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26927.90" />
+        <option value="bundled-python-sdk-f78a9d071105-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.26574.90" />
       </set>
     </attachedChunks>
   </component>

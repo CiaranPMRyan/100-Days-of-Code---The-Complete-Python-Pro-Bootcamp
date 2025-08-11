@@ -1,8 +1,28 @@
 from tkinter import *
-
-from pandas.core.computation.align import align_terms
+from tkinter import messagebox
+import random
+import pyperclip
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+
+
+letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+
+
+def pass_generator():
+
+    password_list = [random.choice(letters) for _ in range(random.randint(8, 10))]
+    password_list += [random.choice(symbols) for _ in range(random.randint(2, 4))]
+    password_list += [random.choice(numbers) for _ in range(random.randint(2, 4))]
+
+    random.shuffle(password_list)
+
+    password = "".join(password_list)
+
+    entry_password.insert(0, password)
+    pyperclip.copy(password)
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
@@ -10,12 +30,20 @@ def save():
     web = entry_web.get()
     user = entry_user.get()
     password = entry_password.get()
-    #print(web)
-    with open("data.txt", "a") as f:
-         f.write(f"{web} | {user} | {password}\n")
 
-    entry_web.delete(0, END)
-    entry_password.delete(0, END)
+    #get len of inputs, check if they're not zero, only then can I proceed to the rest.
+
+    if len(web) == 0 or len(password) == 0:
+        messagebox.showerror(title="STOP", message="Please don't leave any fields empty!")
+    else:
+        is_ok = messagebox.askokcancel(title=web, message=f"These are the details entered: \nEmail: {user} \nPassword: {password} \nIs it okay to save?")
+
+        if is_ok:
+            with open("data.txt", "a") as f:
+                f.write(f"{web} | {user} | {password}\n")
+                entry_web.delete(0, END)
+                entry_password.delete(0, END)
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -60,7 +88,7 @@ entry_password = Entry(width=20, show="*")
 entry_password.grid(column=1, row=3)
 
 # Button 1 col 3, row 3
-button_gen = Button(text="Generate Password")
+button_gen = Button(text="Generate Password", command=pass_generator)
 button_gen.grid(column=2, row=3)
 
 # Button 2 col 1, row 4, colspan 2
