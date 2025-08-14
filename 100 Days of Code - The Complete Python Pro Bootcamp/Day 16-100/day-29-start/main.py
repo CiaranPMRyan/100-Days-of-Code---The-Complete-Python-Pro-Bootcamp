@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
@@ -31,18 +32,32 @@ def save():
     user = entry_user.get()
     password = entry_password.get()
 
-    #get len of inputs, check if they're not zero, only then can I proceed to the rest.
+    # Dictionary creation for json writing
+    new_data = {
+        web: {
+            "user" : user,
+            "password" : password,
+        }
 
+    }
+
+    #get len of inputs, check if they're not zero, only then can I proceed to the rest.
     if len(web) == 0 or len(password) == 0:
         messagebox.showerror(title="STOP", message="Please don't leave any fields empty!")
     else:
-        is_ok = messagebox.askokcancel(title=web, message=f"These are the details entered: \nEmail: {user} \nPassword: {password} \nIs it okay to save?")
-
-        if is_ok:
-            with open("data.txt", "a") as f:
-                f.write(f"{web} | {user} | {password}\n")
-                entry_web.delete(0, END)
-                entry_password.delete(0, END)
+        try:
+            with open("data.json", "r") as f:# Open the file in read mode
+                data = json.load(f)  # Read in the existing data
+        except FileNotFoundError:
+            with open("data.json", "w") as f:
+                json.dump(new_data, f, indent=4)
+        else:
+            data.update(new_data)  # Add new data to the existing data
+            with open("data.json", "w") as f: #Open the file in write mode
+                json.dump(data, f, indent=4) #Write all the data back to the file
+        finally:
+            entry_web.delete(0, END)
+            entry_password.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
