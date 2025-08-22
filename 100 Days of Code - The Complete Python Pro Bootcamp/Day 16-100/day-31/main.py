@@ -1,9 +1,8 @@
 from tkinter import *
 from tkinter.ttk import Combobox
-from xml.dom.xmlbuilder import Options
-
 import pandas as pd
 import random
+import time
 
 BACKGROUND_COLOR = "#B1DDC6"
 CAN_X = 800
@@ -23,8 +22,19 @@ def word_generator():
     pairing = data.iloc[random.randrange(len(data) - 1)]
     foreign_word = pairing[f"{lang}"]
     english_word = pairing["English"]
-    canvas.itemconfig(language, text=f"{lang}")
-    canvas.itemconfig(guess_word, text=pairing[f"{lang}"])
+
+    canvas.itemconfig(canvas_image, image=front_image)
+    canvas.itemconfig(language, text=f"{lang}", fill="black")
+    canvas.itemconfig(guess_word, text=pairing[f"{lang}"], fill="black")
+
+    window.after(3000, flip_card, foreign_word, english_word)
+
+def flip_card(word_a, word_b):
+    print(word_a)
+    print(word_b)
+    canvas.itemconfig(canvas_image, image=back_image)
+    canvas.itemconfig(language, text="English", fill="white")
+    canvas.itemconfig(guess_word, text=f"{word_b}", fill="white")
 
 
 # ---------- UI SETUP ---------- #
@@ -33,12 +43,14 @@ window = Tk()
 window.title("Flashy Lingo")
 window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
 
+# ---------- Countdown ---------- #
+
 # Flash Card #
 
 canvas = Canvas(width=CAN_X, height=CAN_Y, highlightthickness=0, bg=BACKGROUND_COLOR)
 front_image = PhotoImage(file="./images/card_front.png")
 back_image = PhotoImage(file="./images/card_back.png")
-canvas.create_image(CAN_X / 2, CAN_Y / 2, image=front_image)
+canvas_image = canvas.create_image(CAN_X / 2, CAN_Y / 2, image=front_image)
 canvas.grid(row=1, column=0, columnspan=2)
 
 language = canvas.create_text(CAN_X / 2, CAN_Y / 4, text="", fill="black", font=(FONT_NAME, 30, "italic"))
