@@ -10,31 +10,36 @@ CAN_Y = 526
 
 FONT_NAME = "arial"
 
-def word_generator():
-    """ Picks a random word pairing from the spreadsheet """
-    # ---------- Pandas Logic ---------- #
+current_card = {}
+lang = ""
+to_learn = []
 
-    lang = combo.get() # Gets the string from the dropdown list
+def set_language():
+    global lang, to_learn
+    lang = combo.get()  # Gets the string from the dropdown list
 
     data = pd.read_csv(f"./data/{lang}_words.csv")
-    data.to_dict(orient="records")
+    to_learn = data.to_dict(orient="records")
 
-    pairing = data.iloc[random.randrange(len(data) - 1)]
-    foreign_word = pairing[f"{lang}"]
-    english_word = pairing["English"]
+def word_generator():
+    global lang, current_card, to_learn, flip_timer
+    window.after_cancel(flip_timer)
+    set_language()
+
+    """ Picks a random word pairing from the spreadsheet """
+    current_card = random.choice(to_learn)
 
     canvas.itemconfig(canvas_image, image=front_image)
     canvas.itemconfig(language, text=f"{lang}", fill="black")
-    canvas.itemconfig(guess_word, text=pairing[f"{lang}"], fill="black")
+    canvas.itemconfig(guess_word, text=current_card[f"{lang}"], fill="black")
 
-    window.after(3000, flip_card, foreign_word, english_word)
+    flip_timer = window.after(3000, func=flip_card)
 
-def flip_card(word_a, word_b):
-    print(word_a)
-    print(word_b)
+
+def flip_card():
     canvas.itemconfig(canvas_image, image=back_image)
     canvas.itemconfig(language, text="English", fill="white")
-    canvas.itemconfig(guess_word, text=f"{word_b}", fill="white")
+    canvas.itemconfig(guess_word, text=current_card["English"], fill="white")
 
 
 # ---------- UI SETUP ---------- #
@@ -42,6 +47,8 @@ def flip_card(word_a, word_b):
 window = Tk()
 window.title("Flashy Lingo")
 window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
+
+flip_timer = window.after(3000, func=flip_card)
 
 # ---------- Countdown ---------- #
 
@@ -67,6 +74,7 @@ combo.current(0) # Sets a default to Dutch so it can pass in something at the st
 combo.bind("<<ComboboxSelected>>", lambda _ : word_generator()) # Makes the new option change straight away
 combo.grid(row=0, column=1)
 
+print(set_language())
 
 # Buttons #
 
