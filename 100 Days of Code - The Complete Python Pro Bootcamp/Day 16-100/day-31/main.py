@@ -18,22 +18,32 @@ def set_language():
     global lang, to_learn
     lang = combo.get()  # Gets the string from the dropdown list
 
-    data = pd.read_csv(f"./data/{lang}_words.csv")
+    try:
+        to_learn_file = pd.read_csv(f"./data/{lang}_to_learn.csv")
+        to_learn = to_learn_file.to_dict(orient="records")
+        print(to_learn)
+    except FileNotFoundError:
+        basedata = pd.read_csv(f"./data/{lang}_words.csv")
+        print(basedata)
+        basedata.to_csv(f"./data/{lang}_to_learn.csv", index=False)
+        print("And then here")
+        to_learn_file = basedata.to_dict(orient="records")
+        print(to_learn_file)
+        to_learn = to_learn_file
 
     # NOTE for edits - Create a base data file which is the one with the language. Then create a to_learn CSV which is populated with that data. Push that file into the to_learn variable
     # in the correct() function, update the to_learn CSV each time so when it is called here, the words are not in it.
 
-    to_learn = data.to_dict(orient="records")
-    return lang
+    return lang, to_learn
 
 def word_generator():
-    global lang, current_card, to_learn, flip_timer
+    """ Picks a random word pairing from the to_learn list """
+    global current_card, flip_timer
     #window.after_cancel(flip_timer)
     set_language()
 
-    """ Picks a random word pairing from the to_learn list """
     current_card = random.choice(to_learn)
-    print(to_learn)
+    #print(to_learn)
 
     canvas.itemconfig(canvas_image, image=front_image)
     canvas.itemconfig(language, text=f"{lang}", fill="black")
@@ -49,7 +59,10 @@ def flip_card():
 def correct():
     global to_learn
     word_generator()
+    print(current_card)
     to_learn.remove(current_card)
+    updated_list = pd.DataFrame(to_learn)
+    updated_list.to_csv(f"./data/{lang}_to_learn.csv", index=False)
     print(to_learn)
 
 def incorrect():
@@ -102,6 +115,6 @@ right_image = PhotoImage(file="./images/right.png")
 right_button = Button(image=right_image, highlightthickness=0, command=correct)
 right_button.grid(column=1, row=2)
 
-word_generator()
+#word_generator()
 
 window.mainloop()
