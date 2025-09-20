@@ -4,37 +4,63 @@ import pandas as pd
 import random
 import time
 
+import pandas.errors
+
 BACKGROUND_COLOR = "#B1DDC6"
 CAN_X = 800
 CAN_Y = 526
 
 FONT_NAME = "arial"
 
+current_card = {}
+lang = ""
+to_learn = []
+
+def set_language():
+    global lang, to_learn
+    lang = combo.get()  # Gets the string from the dropdown list
+
+    try:
+        to_learn_file = pd.read_csv(f"./data/{lang}_to_learn.csv")
+        to_learn = to_learn_file.to_dict(orient="records")
+    except FileNotFoundError:
+        basedata = pd.read_csv(f"./data/{lang}_words.csv")
+        basedata.to_csv(f"./data/{lang}_to_learn.csv", index=False)
+        to_learn_file = basedata.to_dict(orient="records")
+        to_learn = to_learn_file
+    except pandas.errors.EmptyDataError:
+        canvas.itemconfig(canvas_image, image=front_image)
+        canvas.itemconfig(language, text="You have mastered this language. \nPlease choose another", fill="black")
+        canvas.itemconfig(guess_word, text="", fill="black")
+        window.wait_window()
+
+    return lang, to_learn
+
 def word_generator():
-    """ Picks a random word pairing from the spreadsheet """
-    # ---------- Pandas Logic ---------- #
+    """ Picks a random word pairing from the to_learn list """
+    global current_card, flip_timer
+    window.after_cancel(flip_timer)
+    set_language()
 
-    lang = combo.get() # Gets the string from the dropdown list
-
-    data = pd.read_csv(f"./data/{lang}_words.csv")
-    data.to_dict(orient="records")
-
-    pairing = data.iloc[random.randrange(len(data) - 1)]
-    foreign_word = pairing[f"{lang}"]
-    english_word = pairing["English"]
+    current_card = random.choice(to_learn)
 
     canvas.itemconfig(canvas_image, image=front_image)
     canvas.itemconfig(language, text=f"{lang}", fill="black")
-    canvas.itemconfig(guess_word, text=pairing[f"{lang}"], fill="black")
+    canvas.itemconfig(guess_word, text=current_card[f"{lang}"], fill="black")
 
-    window.after(3000, flip_card, foreign_word, english_word)
+    flip_timer = window.after(3000, func=flip_card)
 
-def flip_card(word_a, word_b):
-    print(word_a)
-    print(word_b)
+def flip_card():
     canvas.itemconfig(canvas_image, image=back_image)
     canvas.itemconfig(language, text="English", fill="white")
-    canvas.itemconfig(guess_word, text=f"{word_b}", fill="white")
+    canvas.itemconfig(guess_word, text=current_card["English"], fill="white")
+
+def correct():
+    word_generator()
+    to_learn.remove(current_card)
+    updated_list = pd.DataFrame(to_learn)
+    updated_list.to_csv(f"./data/{lang}_to_learn.csv", index=False)
+    #print(len(to_learn))
 
 
 # ---------- UI SETUP ---------- #
@@ -42,6 +68,8 @@ def flip_card(word_a, word_b):
 window = Tk()
 window.title("Flashy Lingo")
 window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
+
+flip_timer = window.after(3000, func=flip_card)
 
 # ---------- Countdown ---------- #
 
@@ -62,8 +90,8 @@ label = Label(text="Please choose your langauge: ", font=(FONT_NAME, 10, "bold")
 label.config(bg=BACKGROUND_COLOR)
 label.grid(row=0, column=0)
 
-combo = Combobox(state="readonly", values=["Dutch", "French", "German"])
-combo.current(0) # Sets a default to Dutch so it can pass in something at the start
+combo = Combobox(state="readonly", values=["Dutch", "French", "German", "Test"])
+combo.current(0)
 combo.bind("<<ComboboxSelected>>", lambda _ : word_generator()) # Makes the new option change straight away
 combo.grid(row=0, column=1)
 
@@ -75,9 +103,9 @@ wrong_button = Button(image=wrong_image, highlightthickness=0, command=word_gene
 wrong_button.grid(column=0, row=2)
 
 right_image = PhotoImage(file="./images/right.png")
-right_button = Button(image=right_image, highlightthickness=0, command=word_generator)
+right_button = Button(image=right_image, highlightthickness=0, command=correct)
 right_button.grid(column=1, row=2)
 
-word_generator()
+#word_generator()
 
 window.mainloop()
