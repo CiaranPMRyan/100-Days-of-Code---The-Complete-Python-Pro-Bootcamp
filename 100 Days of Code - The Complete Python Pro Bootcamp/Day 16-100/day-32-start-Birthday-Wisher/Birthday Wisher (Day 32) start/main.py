@@ -1,22 +1,28 @@
-# import smtplib
-#
-# my_email = "appbreweryciarantest@gmail.com"
-# password = "vpkvfnlaqezctbky"
-#
-# with smtplib.SMTP("smtp.gmail.com") as connection:
-#     connection.starttls()#
-#     connection.login(user=my_email, password=password)
-#     connection.sendmail(from_addr=my_email, to_addrs="appbreweryciarantest@yahoo.com", msg="Subject:Hello world!\n\nHere is my text")
-#     connection.close()
-
-
-
+import smtplib
 import datetime as dt
+import random
 
-now = dt.datetime.now()
-year = now.year
-month = now.month
-day_of_week = now.weekday()
+def getMessage():
+    with open('quotes.txt', 'r') as file:
+        quote = file.readlines()
+    message = random.choice(quote)
+    return message
 
-date_of_birth = dt.datetime(year=1980, month=12, day=22)
-print(date_of_birth)
+def sendMail():
+    my_email = "appbreweryciarantest@gmail.com"
+    password = "vpkvfnlaqezctbky"
+    message = getMessage()
+
+    with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+        connection.starttls()
+        connection.login(user=my_email, password=password)
+        connection.sendmail(from_addr=my_email, to_addrs="ciaran@burgschneider.com", msg=f"Subject:Morning Quote!\n\n{message}")
+        connection.close()
+
+def main():
+    now = dt.datetime.now()
+    day_of_week = now.weekday()
+    if day_of_week == 1:
+        sendMail()
+
+main()
