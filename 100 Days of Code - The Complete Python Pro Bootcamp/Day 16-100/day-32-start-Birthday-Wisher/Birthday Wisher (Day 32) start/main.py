@@ -13,7 +13,9 @@ def sendMail():
     password = "vpkvfnlaqezctbky"
     message = getMessage()
 
-    with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+    with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
+        #connection.set_debuglevel(1)
+        connection.ehlo()
         connection.starttls()
         connection.login(user=my_email, password=password)
         connection.sendmail(from_addr=my_email, to_addrs="ciaran@burgschneider.com", msg=f"Subject:Morning Quote!\n\n{message}")
