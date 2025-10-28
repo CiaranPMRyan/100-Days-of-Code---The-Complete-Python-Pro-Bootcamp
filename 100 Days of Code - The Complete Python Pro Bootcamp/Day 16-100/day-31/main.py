@@ -90,7 +90,7 @@ label = Label(text="Please choose your langauge: ", font=(FONT_NAME, 10, "bold")
 label.config(bg=BACKGROUND_COLOR)
 label.grid(row=0, column=0)
 
-combo = Combobox(state="readonly", values=["Dutch", "French", "German", "Test"])
+combo = Combobox(state="readonly", values=["Dutch", "French", "German"])
 combo.current(0)
 combo.bind("<<ComboboxSelected>>", lambda _ : word_generator()) # Makes the new option change straight away
 combo.grid(row=0, column=1)

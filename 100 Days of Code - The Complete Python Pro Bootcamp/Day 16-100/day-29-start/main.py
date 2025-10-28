@@ -12,7 +12,7 @@ symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
 
 def pass_generator():
 
-    password_list = [random.choice(letters) for _ in range(random.randint(8, 10))]
+    password_list = [random.choice(letters) for _ in range(random.randint(10, 14))]
     password_list += [random.choice(symbols) for _ in range(random.randint(2, 4))]
     password_list += [random.choice(numbers) for _ in range(random.randint(2, 4))]
 
@@ -112,7 +112,7 @@ entry_user = Entry(width=30)
 entry_user.grid(column=1, row=2, columnspan=2, sticky="we")
 entry_user.insert(0, "myemail@email.com")
 
-entry_password = Entry(width=15, show="*")
+entry_password = Entry(width=15) #, show="*")
 entry_password.grid(column=1, row=3, sticky="we")
 
 # ---- Buttons ---- #
